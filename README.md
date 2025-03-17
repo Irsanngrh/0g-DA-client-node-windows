@@ -49,6 +49,7 @@ BATCHER_CHAIN_WRITE_TIMEOUT=13s
 ```
 
 ## Intalasi Akhir
+CARA 1 :
 - Untuk menjalankan node, ketik kode berikut:
 ```
 docker run -d --env-file envfile.env --name 0g-da-client -v ./run:/runtime -p 51001:51001 0g-da-client combined 
@@ -60,4 +61,38 @@ docker logs -f CONTAINER_ID
 - Untuk menhentikan node, ketik kode berikut:
 ```
 docker stop CONTAINER_ID
+```
+
+CARA 2 :
+- Untuk menjalankan ulang node, ketik kode berikut:
+```
+cd 0g-da-client
+docker run -v ./run:/runtime -p 51001:51001 0g-da-client:latest combined \
+    --chain.rpc https://evmrpc-testnet.0g.ai \
+    --chain.private-key YOUR_PRIVATE_KEY \
+    --chain.receipt-wait-rounds 180 \
+    --chain.receipt-wait-interval 1s \
+    --chain.gas-limit 2000000 \
+    --combined-server.use-memory-db \
+    --combined-server.storage.kv-db-path /runtime/ \
+    --combined-server.storage.time-to-expire 2592000 \
+    --disperser-server.grpc-port 51001 \
+    --batcher.da-entrance-contract ENTRANCE_CONTRACT_ADDR \
+    --batcher.da-signers-contract 0x0000000000000000000000000000000000001000 \
+    --batcher.finalizer-interval 20s \
+    --batcher.confirmer-num 3 \
+    --batcher.max-num-retries-for-sign 3 \
+    --batcher.finalized-block-count 50 \
+    --batcher.batch-size-limit 500 \
+    --batcher.encoding-interval 3s \
+    --batcher.encoding-request-queue-size 1 \
+    --batcher.pull-interval 10s \
+    --batcher.signing-interval 3s \
+    --batcher.signed-pull-interval 20s \
+    --batcher.expiration-poll-interval 3600 \
+    --encoder-socket DA_ENCODER_SERVER \
+    --encoding-timeout 300s \
+    --signing-timeout 60s \
+    --chain-read-timeout 12s \
+    --chain-write-timeout 13s
 ```
